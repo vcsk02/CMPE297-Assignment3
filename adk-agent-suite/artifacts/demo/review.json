@@ -1,0 +1,76 @@
+{
+  "agent": "review",
+  "mode": "demo",
+  "model": "scripted-offline-fixture",
+  "session_id": "d30929b014c843518e8217792c6400ff",
+  "output": {
+    "verdict": "changes_requested",
+    "summary": "Deterministic review found a DFS stack bug and unsafe SQL.",
+    "recommendations": [
+      "Initialize stack as [start]",
+      "Bind SQL parameters",
+      "Add regression tests"
+    ],
+    "findings": [
+      {
+        "file": "app.py",
+        "line": 8,
+        "rule": "stack-initialization",
+        "severity": "medium",
+        "message": "Container later uses pop(); verify initialization. For DFS use [start].",
+        "source": "python_ast"
+      },
+      {
+        "file": "app.py",
+        "line": 28,
+        "rule": "shell-true",
+        "severity": "high",
+        "message": "Use an argument list with shell=False.",
+        "source": "python_ast"
+      },
+      {
+        "file": "app.py",
+        "line": 23,
+        "rule": "sql-interpolation",
+        "severity": "high",
+        "message": "Bind SQL values with parameters.",
+        "source": "python_ast"
+      }
+    ],
+    "test_execution": {
+      "status": "failed",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "E.F\n======================================================================\nERROR: test_integer_start_reaches_target (test_app.GraphTests.test_integer_start_reaches_target)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/e776b7a80147/adk-agent-suite/examples/review_target/test_app.py\", line 10, in test_integer_start_reaches_target\n    self.assertTrue(dfs_search({1: [2], 2: []}, 1, 2))\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/scratch/e776b7a80147/adk-agent-suite/examples/review_target/app.py\", line 10, in dfs_search\n    current = stack.pop()\n              ^^^^^^^^^\nAttributeError: 'int' object has no attribute 'pop'\n\n======================================================================\nFAIL: test_zero_node_can_reach_neighbor (test_app.GraphTests.test_zero_node_can_reach_neighbor)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/workspace/scratch/e776b7a80147/adk-agent-suite/examples/review_target/test_app.py\", line 13, in test_zero_node_can_reach_neighbor\n    self.assertTrue(dfs_search({0: [1], 1: []}, 0, 1))\nAssertionError: False is not true\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (failures=1, errors=1)\n",
+      "isolation": "trusted"
+    },
+    "limitations": [
+      "AST checks cover a small Python rule set, not complete security analysis.",
+      "This assistant never approves or merges a pull request."
+    ]
+  },
+  "trace": [],
+  "messages": [
+    {
+      "author": "ast_check",
+      "text": "{\"findings\": [{\"file\": \"app.py\", \"line\": 8, \"rule\": \"stack-initialization\", \"severity\": \"medium\", \"message\": \"Container later uses pop(); verify initialization. For DFS use [start].\", \"source\": \"python_ast\"}, {\"file\": \"app.py\", \"line\": 28, \"rule\": \"shell-true\", \"severity\": \"high\", \"message\": \"Use an argument list with shell=False.\", \"source\": \"python_ast\"}, {\"file\": \"app.py\", \"line\": 23, \"rule\": \"sql-interpolation\", \"severity\": \"high\", \"message\": \"Bind SQL values with parameters.\", \"source\": \"python_ast\"}]}"
+    },
+    {
+      "author": "lint_check",
+      "text": "{\"status\": \"passed\", \"findings\": [], \"exit_code\": 0}"
+    },
+    {
+      "author": "test_check",
+      "text": "{\"status\": \"failed\", \"exit_code\": 1, \"stdout\": \"\", \"stderr\": \"E.F\\n======================================================================\\nERROR: test_integer_start_reaches_target (test_app.GraphTests.test_integer_start_reaches_target)\\n----------------------------------------------------------------------\\nTraceback (most recent call last):\\n  File \\\"/workspace/scratch/e776b7a80147/adk-agent-suite/examples/review_target/test_app.py\\\", line 10, in test_integer_start_reaches_target\\n    self.assertTrue(dfs_search({1: [2], 2: []}, 1, 2))\\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"/workspace/scratch/e776b7a80147/adk-agent-suite/examples/review_target/app.py\\\", line 10, in dfs_search\\n    current = stack.pop()\\n              ^^^^^^^^^\\nAttributeError: 'int' object has no attribute 'pop'\\n\\n======================================================================\\nFAIL: test_zero_node_can_reach_neighbor (test_app.GraphTests.test_zero_node_can_reach_neighbor)\\n----------------------------------------------------------------------\\nTraceback (most recent call last):\\n  File \\\"/workspace/scratch/e776b7a80147/adk-agent-suite/examples/review_target/test_app.py\\\", line 13, in test_zero_node_can_reach_neighbor\\n    self.assertTrue(dfs_search({0: [1], 1: []}, 0, 1))\\nAssertionError: False is not true\\n\\n----------------------------------------------------------------------\\nRan 3 tests in 0.001s\\n\\nFAILED (failures=1, errors=1)\\n\", \"isolation\": \"trusted\"}"
+    },
+    {
+      "author": "review_synthesis",
+      "text": "{\"summary\": \"Deterministic review found a DFS stack bug and unsafe SQL.\", \"recommendations\": [\"Initialize stack as [start]\", \"Bind SQL parameters\", \"Add regression tests\"]}"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 0,
+    "output_tokens": 0
+  },
+  "elapsed_seconds": 0.083
+}

@@ -1,0 +1,233 @@
+{
+  "agent": "leads",
+  "mode": "demo",
+  "model": "scripted-offline-fixture",
+  "session_id": "dc9fd764ea7e42aab7287485f46ac84f",
+  "output": {
+    "market": "Thailand fintech (fictional demo)",
+    "patterns": [
+      "local hiring",
+      "regional partnership",
+      "market pilot"
+    ],
+    "leads": [
+      {
+        "company": "Northstar Payments (fictional)",
+        "website": "https://northstar.example/",
+        "signals": [
+          "local hiring",
+          "regional partnership"
+        ],
+        "citations": [
+          "https://northstar.example/expansion",
+          "https://northstar.example/careers"
+        ],
+        "rationale": "Fixture evidence shows two market-entry signals, verified by a follow-up.",
+        "priority_score": 70,
+        "score_explanation": "25 per distinct signal + 10 per source, capped at 100; not a probability"
+      },
+      {
+        "company": "Meridian Ledger (fictional)",
+        "website": "https://meridian.example/",
+        "signals": [
+          "local hiring",
+          "market pilot"
+        ],
+        "citations": [
+          "https://meridian.example/news"
+        ],
+        "rationale": "Fixture evidence suggests early market exploration; verify before outreach.",
+        "priority_score": 60,
+        "score_explanation": "25 per distinct signal + 10 per source, capped at 100; not a probability"
+      }
+    ],
+    "limitations": [
+      "All demo companies and sources are fictional .example fixtures.",
+      "Scores are heuristics; no contacts are harvested or messaged."
+    ],
+    "mode": "demo",
+    "sources": [
+      {
+        "url": "https://northstar.example/expansion",
+        "title": "Northstar fictional expansion",
+        "company": "Northstar Payments (fictional)",
+        "website": "https://northstar.example/",
+        "summary": "Fixture: Northstar is hiring compliance staff and announced a Thailand partnership.",
+        "signals": [
+          "local hiring",
+          "regional partnership"
+        ]
+      },
+      {
+        "url": "https://meridian.example/news",
+        "title": "Meridian fictional market entry",
+        "company": "Meridian Ledger (fictional)",
+        "website": "https://meridian.example/",
+        "summary": "Fixture: Meridian posted localization roles and a pilot in Thailand.",
+        "signals": [
+          "local hiring",
+          "market pilot"
+        ]
+      },
+      {
+        "url": "https://northstar.example/careers",
+        "title": "Northstar fictional hiring",
+        "company": "Northstar Payments (fictional)",
+        "website": "https://northstar.example/",
+        "summary": "Fixture follow-up independently checks the compliance hiring signal.",
+        "signals": [
+          "local hiring"
+        ]
+      }
+    ],
+    "human_verification_required": true
+  },
+  "trace": [
+    {
+      "author": "lead_research",
+      "calls": [
+        {
+          "name": "search_web",
+          "arguments": {
+            "query": "Thailand fintech expansion local hiring partnership"
+          }
+        }
+      ],
+      "responses": []
+    },
+    {
+      "author": "lead_research",
+      "calls": [],
+      "responses": [
+        {
+          "name": "search_web",
+          "data": {
+            "query": "Thailand fintech expansion local hiring partnership",
+            "answer": "Fictional fixture evidence for Thailand fintech expansion.",
+            "sources": [
+              {
+                "url": "https://northstar.example/expansion",
+                "title": "Northstar fictional expansion",
+                "company": "Northstar Payments (fictional)",
+                "website": "https://northstar.example/",
+                "summary": "Fixture: Northstar is hiring compliance staff and announced a Thailand partnership.",
+                "signals": [
+                  "local hiring",
+                  "regional partnership"
+                ]
+              },
+              {
+                "url": "https://meridian.example/news",
+                "title": "Meridian fictional market entry",
+                "company": "Meridian Ledger (fictional)",
+                "website": "https://meridian.example/",
+                "summary": "Fixture: Meridian posted localization roles and a pilot in Thailand.",
+                "signals": [
+                  "local hiring",
+                  "market pilot"
+                ]
+              }
+            ],
+            "queries_remaining": 5,
+            "mode": "demo"
+          }
+        }
+      ]
+    },
+    {
+      "author": "lead_research",
+      "calls": [
+        {
+          "name": "search_web",
+          "arguments": {
+            "query": "Northstar compliance hiring Thailand verify signal"
+          }
+        }
+      ],
+      "responses": []
+    },
+    {
+      "author": "lead_research",
+      "calls": [],
+      "responses": [
+        {
+          "name": "search_web",
+          "data": {
+            "query": "Northstar compliance hiring Thailand verify signal",
+            "answer": "Fictional fixture evidence for Thailand fintech expansion.",
+            "sources": [
+              {
+                "url": "https://northstar.example/careers",
+                "title": "Northstar fictional hiring",
+                "company": "Northstar Payments (fictional)",
+                "website": "https://northstar.example/",
+                "summary": "Fixture follow-up independently checks the compliance hiring signal.",
+                "signals": [
+                  "local hiring"
+                ]
+              }
+            ],
+            "queries_remaining": 4,
+            "mode": "demo"
+          }
+        }
+      ]
+    },
+    {
+      "author": "lead_critic",
+      "calls": [
+        {
+          "name": "finish_research",
+          "arguments": {
+            "reason": "Two searches complete; fixture gaps disclosed"
+          }
+        }
+      ],
+      "responses": []
+    },
+    {
+      "author": "lead_critic",
+      "calls": [],
+      "responses": [
+        {
+          "name": "finish_research",
+          "data": {
+            "status": "research_complete",
+            "reason": "Two searches complete; fixture gaps disclosed"
+          }
+        }
+      ]
+    }
+  ],
+  "messages": [
+    {
+      "author": "lead_plan",
+      "text": "Research plan: discover expansion signals, verify with follow-up, rank with citations."
+    },
+    {
+      "author": "lead_research",
+      "text": "Fixture evidence recorded. Report limitations and cite retrieved sources only."
+    },
+    {
+      "author": "lead_critic",
+      "text": "Coverage gap: verify hiring signal with a second search before finishing."
+    },
+    {
+      "author": "lead_research",
+      "text": "Fixture evidence recorded. Report limitations and cite retrieved sources only."
+    },
+    {
+      "author": "lead_critic",
+      "text": "Coverage gap: verify hiring signal with a second search before finishing."
+    },
+    {
+      "author": "lead_report",
+      "text": "{\"market\": \"Thailand fintech (fictional demo)\", \"patterns\": [\"local hiring\", \"regional partnership\", \"market pilot\"], \"leads\": [{\"company\": \"Northstar Payments (fictional)\", \"website\": \"https://northstar.example/\", \"signals\": [\"local hiring\", \"regional partnership\"], \"citations\": [\"https://northstar.example/expansion\", \"https://northstar.example/careers\"], \"rationale\": \"Fixture evidence shows two market-entry signals, verified by a follow-up.\"}, {\"company\": \"Meridian Ledger (fictional)\", \"website\": \"https://meridian.example/\", \"signals\": [\"local hiring\", \"market pilot\"], \"citations\": [\"https://meridian.example/news\"], \"rationale\": \"Fixture evidence suggests early market exploration; verify before outreach.\"}], \"limitations\": [\"All demo companies and sources are fictional .example fixtures.\", \"Scores are heuristics; no contacts are harvested or messaged.\"]}"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 0,
+    "output_tokens": 0
+  },
+  "elapsed_seconds": 0.204
+}
