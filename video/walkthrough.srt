@@ -1,0 +1,751 @@
+1
+00:00:00,000 --> 00:00:04,480
+This walkthrough builds five agents with Google's Agent Development Kit.
+
+2
+00:00:04,480 --> 00:00:11,263
+We will inspect the implementation, run the supplied scenarios, and explain the evidence each agent produces.
+
+3
+00:00:11,263 --> 00:00:18,357
+The projects cover lead research, Gemini command line delegation, MCP bug assistance, code review, and e-commerce.
+
+4
+00:00:18,357 --> 00:00:22,278
+The important distinction throughout is what actually executed.
+
+5
+00:00:22,278 --> 00:00:25,763
+The offline model is a clearly labeled scripted adapter.
+
+6
+00:00:25,763 --> 00:00:31,239
+The ADK runner, MCP protocol, databases, subprocesses, and code checks execute for real.
+
+7
+00:00:31,239 --> 00:00:37,275
+Live Gemini inference and cloud deployment require your own credentials and are not claimed here.
+
+8
+00:00:37,800 --> 00:00:42,242
+Start in the repository root with Python three point twelve and uv installed.
+
+9
+00:00:42,242 --> 00:00:47,722
+The first command installs the frozen dependencies, including the development and video extras.
+
+10
+00:00:47,722 --> 00:00:50,318
+The next command runs the project test suite.
+
+11
+00:00:50,318 --> 00:00:55,568
+The demo command then runs all five agents and writes reports into the artifacts directory.
+
+12
+00:00:55,568 --> 00:01:00,356
+It uses separate demo databases, so it cannot change a configured production store.
+
+13
+00:01:00,356 --> 00:01:02,895
+No Gemini key is needed for these scenarios.
+
+14
+00:01:02,895 --> 00:01:05,087
+On Windows, the same uv commands work.
+
+15
+00:01:05,087 --> 00:01:09,125
+The readme also provides a PowerShell virtual environment alternative.
+
+16
+00:01:09,700 --> 00:01:12,239
+The runtime is shared by all five projects.
+
+17
+00:01:12,239 --> 00:01:17,730
+It builds a fresh graph, creates a database-backed session, and assigns a new run identifier.
+
+18
+00:01:17,730 --> 00:01:22,984
+The initial state includes the configured source target and research evidence containers.
+
+19
+00:01:22,984 --> 00:01:28,062
+Runner dot run async drives the agent graph with a maximum of twenty four model calls.
+
+20
+00:01:28,062 --> 00:01:33,139
+The runtime captures function calls, function responses, messages, and token metadata.
+
+21
+00:01:33,139 --> 00:01:38,394
+At the end, it validates the domain output and closes the MCP toolsets and session store.
+
+22
+00:01:38,394 --> 00:01:43,235
+This common runner makes the saved traces useful for debugging and demonstrations.
+
+23
+00:01:43,735 --> 00:01:46,881
+Part A is the deep research agent for lead generation.
+
+24
+00:01:46,881 --> 00:01:51,832
+Its planner extracts the target market and industry and proposes a research strategy.
+
+25
+00:01:51,832 --> 00:01:55,269
+A researcher and critic then iterate inside a bounded loop.
+
+26
+00:01:55,269 --> 00:02:01,561
+The researcher gathers public expansion signals; the critic checks identity, freshness, and source coverage.
+
+27
+00:02:01,561 --> 00:02:05,580
+If evidence is insufficient, the critic asks for a focused follow-up.
+
+28
+00:02:05,580 --> 00:02:09,658
+Once the evidence is adequate, the finish research tool ends the loop.
+
+29
+00:02:09,658 --> 00:02:12,512
+A separate writer produces the typed lead report.
+
+30
+00:02:12,512 --> 00:02:17,930
+Three iterations and six searches are hard limits, so the agent cannot research indefinitely.
+
+31
+00:02:18,430 --> 00:02:20,778
+The search web function is an ADK tool.
+
+32
+00:02:20,778 --> 00:02:24,812
+In live mode, it calls Gemini with Google Search grounding enabled.
+
+33
+00:02:24,812 --> 00:02:29,929
+It extracts the returned source URLs and keeps them in session state with the answer.
+
+34
+00:02:29,929 --> 00:02:34,324
+In demo mode, the same tool stores explicitly fictional company evidence.
+
+35
+00:02:34,324 --> 00:02:37,335
+The first query discovers two candidate companies.
+
+36
+00:02:37,335 --> 00:02:40,947
+The second query checks a hiring signal with another source.
+
+37
+00:02:40,947 --> 00:02:45,523
+Research queries, result sizes, search count, and provider time are bounded.
+
+38
+00:02:45,523 --> 00:02:50,580
+The tool does not execute web content or fetch arbitrary URLs supplied by the model.
+
+39
+00:02:51,080 --> 00:02:53,466
+The report is checked outside the model.
+
+40
+00:02:53,466 --> 00:02:58,953
+Pydantic validates the shape, and every cited URL must belong to the retrieved evidence set.
+
+41
+00:02:58,953 --> 00:03:01,398
+Leads are deduplicated by website domain.
+
+42
+00:03:01,398 --> 00:03:09,390
+Priority is computed with a transparent rule: twenty five points per distinct signal and ten points per source, capped at one hundred.
+
+43
+00:03:09,390 --> 00:03:12,908
+This is a ranking heuristic, not a probability of purchase.
+
+44
+00:03:12,908 --> 00:03:17,024
+Citation membership also does not prove that every statement is true.
+
+45
+00:03:17,024 --> 00:03:24,240
+The output therefore requires human verification, especially for company identity, freshness, and any business inference.
+
+46
+00:03:24,740 --> 00:03:27,731
+Here is the captured lead report from the demo run.
+
+47
+00:03:27,731 --> 00:03:32,892
+Northstar has local hiring and partnership signals, backed by two fictional source URLs.
+
+48
+00:03:32,892 --> 00:03:36,470
+Meridian has hiring and market pilot signals with one source.
+
+49
+00:03:36,470 --> 00:03:42,452
+The complete JSON includes the actual tool trace, the three stored source records, and the model mode.
+
+50
+00:03:42,452 --> 00:03:46,205
+The trace contains two search calls followed by finish research.
+
+51
+00:03:46,205 --> 00:03:53,243
+To research actual businesses, set your provider credential and run the leads command in live mode with your own prompt.
+
+52
+00:03:53,243 --> 00:03:56,645
+Then verify the resulting sources before using the report.
+
+53
+00:03:57,240 --> 00:03:59,363
+Part B is the advanced tool agent.
+
+54
+00:03:59,363 --> 00:04:04,484
+It is a sequential ADK pipeline with a planner, a worker, and a final synthesizer.
+
+55
+00:04:04,484 --> 00:04:08,293
+The worker exposes an asynchronous function named Gemini CLI.
+
+56
+00:04:08,293 --> 00:04:12,414
+The model passes a task and a relative directory to this function.
+
+57
+00:04:12,414 --> 00:04:19,033
+The function prepares a bounded source snapshot, runs an external command, and returns structured results.
+
+58
+00:04:19,033 --> 00:04:24,466
+The synthesizer explains those actual results without claiming that files were changed.
+
+59
+00:04:24,466 --> 00:04:28,088
+In offline mode the executable is a Python fixture double.
+
+60
+00:04:28,088 --> 00:04:31,085
+In live mode it is the pinned Google Gemini CLI.
+
+61
+00:04:31,640 --> 00:04:37,283
+Before delegation, the path utility makes the directory relative to an operator-owned root.
+
+62
+00:04:37,283 --> 00:04:40,322
+Absolute paths and parent traversal are rejected.
+
+63
+00:04:40,322 --> 00:04:42,182
+Symlinks are rejected as well.
+
+64
+00:04:42,182 --> 00:04:49,066
+The snapshot copies supported source files only, with a maximum of one hundred files and two hundred kilobytes.
+
+65
+00:04:49,066 --> 00:04:56,569
+Hidden configuration, environment files, git metadata, dependencies, and repository agent instruction files are excluded.
+
+66
+00:04:56,569 --> 00:05:01,282
+This prevents repository configuration from silently becoming CLI authority.
+
+67
+00:05:01,282 --> 00:05:09,530
+It is still important to treat the remaining source as untrusted data and to isolate live execution when serving untrusted customers.
+
+68
+00:05:10,040 --> 00:05:15,745
+The process runner takes an argument list directly, so a task string cannot become shell syntax.
+
+69
+00:05:15,745 --> 00:05:20,320
+It reads standard output and standard error incrementally under a byte limit.
+
+70
+00:05:20,320 --> 00:05:25,846
+It applies a timeout and terminates the process group during cleanup, including cancellation.
+
+71
+00:05:25,846 --> 00:05:29,233
+The live wrapper uses JSON output and plan approval mode.
+
+72
+00:05:29,233 --> 00:05:36,186
+It creates an isolated CLI home, allows read tools, excludes write and shell tools, and passes a minimal environment.
+
+73
+00:05:36,186 --> 00:05:40,880
+These are useful policy controls, but they are not an operating system sandbox.
+
+74
+00:05:40,880 --> 00:05:44,505
+A public multi-tenant service should add isolated containers.
+
+75
+00:05:45,040 --> 00:05:51,705
+The captured tool response shows which files the subprocess analyzed and which functions its AST parser found.
+
+76
+00:05:51,705 --> 00:05:54,432
+Its backend is explicitly fixture subprocess.
+
+77
+00:05:54,432 --> 00:06:00,612
+The test plan includes an integer-start DFS regression, repeated checkout keys, and nonnegative stock.
+
+78
+00:06:00,612 --> 00:06:10,367
+For real Gemini CLI use, install the pinned package with npm, set Gemini CLI binary to that executable, provide your API key, and run the CLI agent in live mode.
+
+79
+00:06:10,367 --> 00:06:15,033
+Version zero point sixty five point zero and its headless flags were checked.
+
+80
+00:06:15,033 --> 00:06:19,335
+An authenticated inference result is not part of this offline evidence.
+
+81
+00:06:19,840 --> 00:06:22,320
+Part C uses the Model Context Protocol.
+
+82
+00:06:22,320 --> 00:06:26,580
+The ADK client launches a Fast MCP stdio server as a child process.
+
+83
+00:06:26,580 --> 00:06:33,448
+It discovers and exposes only four bug tools: search issues, get issue, search knowledge, and propose issue.
+
+84
+00:06:33,448 --> 00:06:38,789
+The authenticated tenant identity comes from the trusted parent process environment.
+
+85
+00:06:38,789 --> 00:06:43,812
+It is absent from tool arguments, so the model cannot switch to another tenant.
+
+86
+00:06:43,812 --> 00:06:49,026
+The server reserves standard output for JSON RPC and sends logs to standard error.
+
+87
+00:06:49,026 --> 00:06:54,940
+This is a real protocol connection rather than direct Python function calls disguised as MCP.
+
+88
+00:06:55,440 --> 00:06:58,984
+In the scenario, checkout retries create duplicate orders.
+
+89
+00:06:58,984 --> 00:07:03,566
+The assistant first searches existing issues and finds bug one hundred one.
+
+90
+00:07:03,566 --> 00:07:08,210
+It reads the issue and searches the knowledge base for idempotency guidance.
+
+91
+00:07:08,210 --> 00:07:14,014
+Its response describes how to reproduce the retry, compare order identifiers, and verify stock.
+
+92
+00:07:14,014 --> 00:07:17,069
+The diagnosis remains a hypothesis to investigate.
+
+93
+00:07:17,069 --> 00:07:21,774
+Because a matching ticket exists, this run does not create a duplicate draft.
+
+94
+00:07:21,774 --> 00:07:29,350
+The saved JSON includes each MCP request and response, making it possible to show exactly which evidence the assistant used.
+
+95
+00:07:29,940 --> 00:07:35,334
+When a new issue is needed, propose issue validates title and body length and stores a draft.
+
+96
+00:07:35,334 --> 00:07:37,364
+The model has no confirmation tool.
+
+97
+00:07:37,364 --> 00:07:42,351
+A separate authenticated API route or trusted local command confirms that exact draft.
+
+98
+00:07:42,351 --> 00:07:45,599
+Confirmation checks tenant ownership and is replay-safe.
+
+99
+00:07:45,599 --> 00:07:49,833
+The bundled tracker is local; it does not claim to publish GitHub issues.
+
+100
+00:07:49,833 --> 00:07:55,806
+This separation is useful because creating a draft is reviewable, while publishing changes shared work.
+
+101
+00:07:55,806 --> 00:08:00,910
+The tests verify that one tenant cannot confirm or read another tenant's draft or issue.
+
+102
+00:08:01,440 --> 00:08:03,596
+Part D is the code review assistant.
+
+103
+00:08:03,596 --> 00:08:06,471
+Its parallel stage runs three custom ADK agents.
+
+104
+00:08:06,471 --> 00:08:11,802
+The AST check finds syntax errors and selected risky patterns without importing the code.
+
+105
+00:08:11,802 --> 00:08:15,097
+Ruff runs as a real linter with isolated configuration.
+
+106
+00:08:15,097 --> 00:08:21,027
+The test stage is skipped by default unless the operator explicitly selects trusted or Docker mode.
+
+107
+00:08:21,027 --> 00:08:23,483
+Each check writes a separate session key.
+
+108
+00:08:23,483 --> 00:08:27,436
+Only after those checks finish does the model explain the results.
+
+109
+00:08:27,436 --> 00:08:33,785
+The final verdict is computed in code, so a reassuring model summary cannot erase a deterministic finding.
+
+110
+00:08:34,340 --> 00:08:38,054
+The demonstration project intentionally contains three defects.
+
+111
+00:08:38,054 --> 00:08:41,885
+The DFS function assigns start directly to stack, then calls pop.
+
+112
+00:08:41,885 --> 00:08:45,835
+An integer start therefore fails, and a zero start exits too early.
+
+113
+00:08:45,835 --> 00:08:50,433
+The fixture also interpolates a customer name into SQL and exposes shell true.
+
+114
+00:08:50,433 --> 00:08:54,677
+The three regression tests produce one pass, one failure, and one error.
+
+115
+00:08:54,677 --> 00:08:57,860
+These failures are expected evidence for the reviewer.
+
+116
+00:08:57,860 --> 00:09:06,290
+They are different from the repository's own pytest checks, which pass because they assert that the assistant correctly reports these problems.
+
+117
+00:09:06,840 --> 00:09:09,102
+The review execution boundary matters.
+
+118
+00:09:09,102 --> 00:09:13,388
+Static checks parse or lint a source snapshot, while tests execute code.
+
+119
+00:09:13,388 --> 00:09:15,114
+The default mode skips tests.
+
+120
+00:09:15,114 --> 00:09:24,281
+Docker mode runs a non-root process without networking, with a read-only source mount, dropped capabilities, and limits on memory, CPU, and process count.
+
+121
+00:09:24,281 --> 00:09:31,959
+The image supplied here supports standard-library unittest projects; applications with dependencies need an audited runner image.
+
+122
+00:09:31,959 --> 00:09:35,709
+Trusted mode is used only for this known demonstration fixture.
+
+123
+00:09:35,709 --> 00:09:41,245
+Hosted environments without Docker should delegate test execution to an isolated job service.
+
+124
+00:09:41,840 --> 00:09:49,375
+The saved review report contains the model explanation, all deterministic findings, and the actual unittest output and exit code.
+
+125
+00:09:49,375 --> 00:09:54,691
+The verdict is changes requested because the AST findings and failing tests require action.
+
+126
+00:09:54,691 --> 00:09:59,598
+If this limited rule set found nothing, the result would still require human review.
+
+127
+00:09:59,598 --> 00:10:02,928
+It never automatically approves or merges a pull request.
+
+128
+00:10:02,928 --> 00:10:11,865
+To extend the project, add focused rules and language-specific isolated runner images, then verify that model changes cannot hide deterministic evidence.
+
+129
+00:10:12,365 --> 00:10:14,472
+Part E is the e-commerce assistant.
+
+130
+00:10:14,472 --> 00:10:19,708
+Its tools search catalog products, find stores, prepare a quote, and read order status.
+
+131
+00:10:19,708 --> 00:10:25,847
+Product prices and stock come from the database, and money is represented in integer U S dollar cents.
+
+132
+00:10:25,847 --> 00:10:32,708
+In this scenario, the agent finds running shoes under one hundred fifty dollars and prepares a quote for one pair.
+
+133
+00:10:32,708 --> 00:10:35,477
+It cannot place an order or capture a payment.
+
+134
+00:10:35,477 --> 00:10:42,880
+Confirmation is an authenticated caller action outside the model's tool list, and customer identity is fixed by the server.
+
+135
+00:10:43,380 --> 00:10:48,257
+Prepare order validates the requested quantity and current product availability.
+
+136
+00:10:48,257 --> 00:10:55,206
+It creates a quote containing the product identifier, customer, quantity, unit price, and a ten minute expiration.
+
+137
+00:10:55,206 --> 00:10:59,351
+The returned response explicitly says that no order has been placed.
+
+138
+00:10:59,351 --> 00:11:01,241
+A quote does not reserve stock.
+
+139
+00:11:01,241 --> 00:11:05,569
+If another customer buys the last item, confirmation must fail cleanly.
+
+140
+00:11:05,569 --> 00:11:10,751
+Similarly, if the product price changes before confirmation, a new quote is required.
+
+141
+00:11:10,751 --> 00:11:16,725
+These checks are enforced by the domain service rather than left to the shopping model's judgment.
+
+142
+00:11:17,280 --> 00:11:20,139
+Confirm order begins one database transaction.
+
+143
+00:11:20,139 --> 00:11:25,485
+It checks whether the customer and idempotency key already identify a completed order.
+
+144
+00:11:25,485 --> 00:11:31,389
+It then locks the quote, verifies ownership, and checks whether the quote already has an order.
+
+145
+00:11:31,389 --> 00:11:35,305
+Before writing, it checks expiration, current price, and stock.
+
+146
+00:11:35,305 --> 00:11:38,475
+Stock decrement and order creation commit together.
+
+147
+00:11:38,475 --> 00:11:43,572
+SQLite uses an immediate transaction, while the PostgreSQL adapter uses row locks.
+
+148
+00:11:43,572 --> 00:11:48,793
+Unique constraints reinforce one order per quote and one order per customer and key.
+
+149
+00:11:48,793 --> 00:11:52,460
+The model does not have access to this confirmation method.
+
+150
+00:11:52,960 --> 00:11:57,548
+The captured checkout artifact shows the quote and resulting unpaid order.
+
+151
+00:11:57,548 --> 00:12:01,701
+The trusted demo driver confirms it, then repeats the same request.
+
+152
+00:12:01,701 --> 00:12:06,723
+Both responses refer to the same order identifier, and stock is decremented once.
+
+153
+00:12:06,723 --> 00:12:13,976
+The project also tests eight concurrent buyers competing for the last item, with exactly one successful confirmation.
+
+154
+00:12:13,976 --> 00:12:15,898
+These are local SQLite results.
+
+155
+00:12:15,898 --> 00:12:19,308
+No payment was captured and no shipment was dispatched.
+
+156
+00:12:19,308 --> 00:12:26,995
+A commercial deployment still needs payment, tax, fulfillment, migrations, audit events, and its own operational validation.
+
+157
+00:12:27,495 --> 00:12:31,485
+The API maps strong bearer tokens to trusted customer identities.
+
+158
+00:12:31,485 --> 00:12:34,370
+Empty configuration rejects protected requests.
+
+159
+00:12:34,370 --> 00:12:42,227
+The caller cannot set a different customer in the request body, and the shopping MCP server does not expose a customer argument.
+
+160
+00:12:42,227 --> 00:12:45,296
+Quote confirmation requires an idempotency header.
+
+161
+00:12:45,296 --> 00:12:51,680
+Order reads and delivery changes also check ownership, and delivery changes require the current version.
+
+162
+00:12:51,680 --> 00:12:55,854
+Agent calls have an overall timeout and a bounded concurrency limit.
+
+163
+00:12:55,854 --> 00:13:02,545
+The supplied API tests exercise missing authentication, cross-customer requests, and invalid identity fields.
+
+164
+00:13:03,045 --> 00:13:09,939
+For the database-backed cloud variant, the domain adapter accepts a PostgreSQL or AlloyDB connection string.
+
+165
+00:13:09,939 --> 00:13:15,620
+An optional catalog MCP URL enables a read-only Toolbox search tool over Streamable HTTP.
+
+166
+00:13:15,620 --> 00:13:20,790
+The YAML file exposes a parameterized catalog select and no order mutation tools.
+
+167
+00:13:20,790 --> 00:13:24,301
+Transactional writes remain in the application service.
+
+168
+00:13:24,301 --> 00:13:30,939
+The deployment guide covers private networking, persistent sessions, service credentials, and Cloud Run.
+
+169
+00:13:30,939 --> 00:13:38,280
+These hosted paths are supplied as deployment assets and have not been provisioned or verified in this environment.
+
+170
+00:13:38,780 --> 00:13:44,218
+The run index lists all five completed scenarios and their actual tool-call counts.
+
+171
+00:13:44,218 --> 00:13:47,691
+The project suite contains twenty four passing tests.
+
+172
+00:13:47,691 --> 00:14:01,975
+It checks each ADK graph, MCP interactions, authorization, citation membership, path restrictions, subprocess timeout and output limits, order replay, price changes, expiration, delivery versions, and concurrent stock.
+
+173
+00:14:01,975 --> 00:14:06,562
+The complete execution log and JUnit report are committed as evidence.
+
+174
+00:14:06,562 --> 00:14:10,886
+The PostgreSQL CI job is provided separately but has not run here.
+
+175
+00:14:10,886 --> 00:14:16,390
+Scripted demo success verifies orchestration and invariants, not live model quality.
+
+176
+00:14:16,890 --> 00:14:26,631
+To evaluate live behavior, configure your provider key and supported Gemini model, initialize your own database, and run the commands in the walkthrough.
+
+177
+00:14:26,631 --> 00:14:31,278
+Start with read-only tasks and inspect source citations and tool results.
+
+178
+00:14:31,278 --> 00:14:35,480
+The CLI path additionally needs the installed external executable.
+
+179
+00:14:35,480 --> 00:14:43,119
+For deployment, use persistent PostgreSQL sessions and inventory, authenticated ingress, and isolated execution workers.
+
+180
+00:14:43,119 --> 00:14:48,849
+The repository pins tested dependency versions and documents current deprecation warnings.
+
+181
+00:14:48,849 --> 00:14:57,380
+Treat model quality, cost, latency, hosted database behavior, and deployment limits as measurements to verify in your own environment.
+
+182
+00:14:57,890 --> 00:15:04,101
+The repository includes the finished MP4, captions, transcript, chapter timestamps, and detailed guides.
+
+183
+00:15:04,101 --> 00:15:10,850
+The GitHub publishing script creates a private repository by default using your authenticated GitHub CLI session.
+
+184
+00:15:10,850 --> 00:15:16,823
+The YouTube helper uses your local OAuth consent and verifies the intended channel before uploading.
+
+185
+00:15:16,823 --> 00:15:19,272
+It records the actual returned video URL.
+
+186
+00:15:19,272 --> 00:15:25,602
+This delivery does not invent GitHub or YouTube links, and publication requires authorized account access.
+
+187
+00:15:25,602 --> 00:15:30,500
+After upload succeeds, add the real video URL to the readme and submit both links.
+
+188
+00:15:30,500 --> 00:15:34,800
+Every command and boundary discussed here is documented beside the code.

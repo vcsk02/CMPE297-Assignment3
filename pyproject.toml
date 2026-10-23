@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling==1.29.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "adk-agent-suite"
+version = "1.0.0"
+description = "Five end-to-end ADK agents with MCP, grounded research, CLI delegation and transactional commerce"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "google-adk[db]==2.12.0", "mcp==1.30.0", "fastapi==0.141.1",
+  "uvicorn==0.54.0", "httpx==0.28.1", "pydantic==2.14.1",
+  "python-dotenv==1.2.4", "psycopg[binary]==3.3.6", "ruff==0.17.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1", "pytest-asyncio==1.4.0"]
+video = ["pillow==13.0.0"]
+youtube = ["google-api-python-client>=2,<3", "google-auth-oauthlib>=1,<2"]
+
+[project.scripts]
+agent-suite = "agent_suite.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agent_suite"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+filterwarnings = ["ignore:.*EXPERIMENTAL.*:UserWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["examples/review_target", "artifacts", "video"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B", "UP"]

@@ -1,0 +1,125 @@
+{
+  "agent": "shop",
+  "mode": "demo",
+  "model": "scripted-offline-fixture",
+  "session_id": "22d9dba38f5b41848bc53be450bec0dd",
+  "output": {
+    "message": "A 12900-cent quote was prepared using MCP. No order or payment exists yet. Review the quote and use the trusted confirmation endpoint.",
+    "quote": {
+      "quote_id": "quote-39505ab7ac8541ddbee00033e876ffc7",
+      "product_id": "SHOE-001",
+      "quantity": 1,
+      "unit_price_cents": 12900,
+      "total_cents": 12900,
+      "currency": "USD",
+      "expires_at": 1792719268,
+      "requires_confirmation": true,
+      "message": "No order placed. Confirm this exact quote through the trusted API or CLI."
+    }
+  },
+  "trace": [
+    {
+      "author": "shop_assistant",
+      "calls": [
+        {
+          "name": "search_products",
+          "arguments": {
+            "query": "running",
+            "max_price_cents": 15000
+          }
+        }
+      ],
+      "responses": []
+    },
+    {
+      "author": "shop_assistant",
+      "calls": [],
+      "responses": [
+        {
+          "name": "search_products",
+          "data": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\n  \"currency\": \"USD\",\n  \"products\": [\n    {\n      \"id\": \"SHOE-001\",\n      \"name\": \"Trail Runner Pro\",\n      \"category\": \"running\",\n      \"price_cents\": 12900,\n      \"stock\": 8\n    }\n  ]\n}"
+              }
+            ],
+            "isError": false
+          }
+        }
+      ]
+    },
+    {
+      "author": "shop_assistant",
+      "calls": [
+        {
+          "name": "find_stores",
+          "arguments": {
+            "city": "San Jose"
+          }
+        }
+      ],
+      "responses": []
+    },
+    {
+      "author": "shop_assistant",
+      "calls": [],
+      "responses": [
+        {
+          "name": "find_stores",
+          "data": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\n  \"stores\": [\n    {\n      \"id\": \"SJ-01\",\n      \"city\": \"San Jose\",\n      \"address\": \"100 Demo Avenue (fictional)\"\n    }\n  ]\n}"
+              }
+            ],
+            "isError": false
+          }
+        }
+      ]
+    },
+    {
+      "author": "shop_assistant",
+      "calls": [
+        {
+          "name": "prepare_order",
+          "arguments": {
+            "product_id": "SHOE-001",
+            "quantity": 1
+          }
+        }
+      ],
+      "responses": []
+    },
+    {
+      "author": "shop_assistant",
+      "calls": [],
+      "responses": [
+        {
+          "name": "prepare_order",
+          "data": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\n  \"quote_id\": \"quote-39505ab7ac8541ddbee00033e876ffc7\",\n  \"product_id\": \"SHOE-001\",\n  \"quantity\": 1,\n  \"unit_price_cents\": 12900,\n  \"total_cents\": 12900,\n  \"currency\": \"USD\",\n  \"expires_at\": 1792719268,\n  \"requires_confirmation\": true,\n  \"message\": \"No order placed. Confirm this exact quote through the trusted API or CLI.\"\n}"
+              }
+            ],
+            "isError": false
+          }
+        }
+      ]
+    }
+  ],
+  "messages": [
+    {
+      "author": "shop_assistant",
+      "text": "A 12900-cent quote was prepared using MCP. No order or payment exists yet. Review the quote and use the trusted confirmation endpoint."
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 0,
+    "output_tokens": 0
+  },
+  "elapsed_seconds": 0.53
+}
