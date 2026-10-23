@@ -47,6 +47,7 @@ transitive lock. Use uv for reproducible installs.
 
 ## Watch and follow the walkthrough
 
+- [Watch the complete code and execution walkthrough on YouTube](https://youtu.be/Wk8a2sJSKU8)
 - [Narrated MP4](video/adk-agent-suite-walkthrough.mp4) — actual code and captured demo outputs,
   with synthetic narration; no live Gemini inference is implied.
 - [Subtitles](video/walkthrough.srt), [chapter timestamps](video/CHAPTERS.md), and
